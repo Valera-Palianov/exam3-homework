@@ -1,8 +1,17 @@
 import React, {useEffect} from "react"
 import {connect} from "react-redux"
 import {Redirect, useParams} from "react-router-dom"
-import {update, manualUpdate, sortFieldChange, sortDirectionChange} from "../actions/LibraryActions"
-import Status from "../components/Status/Status";
+import Status from "../components/Status/Status"
+import Library from "../components/Library/Library"
+import Filter from "../components/Filter/Filter"
+
+import {
+    update,
+    manualUpdate,
+    sortFieldChange,
+    sortDirectionChange,
+    bookSelectToEdit
+} from "../actions/LibraryActions"
 
 const LibraryContainer = props => {
 
@@ -12,6 +21,8 @@ const LibraryContainer = props => {
 
     const {updatingProcess, needToUpdate} = props.flags
     const {update, manualUpdate} = props
+
+    const {bookEditor} = props
 
     let isNull = false
     let hasError = false
@@ -24,17 +35,17 @@ const LibraryContainer = props => {
         dataStatus.books = {
             isNull: books.list === null,
             isEmpty: books.list !== null ? books.list.length === 0 : true,
-            hasError: books.errors.message !== null
+            hasError: books.error.message !== null
         }
         if(page === 'authors' || page === 'books') {dataStatus.authors = {
             isNull: authors.list === null,
-            isEmpty: authors.list !== null ? authors.list.length : true,
-            hasError: authors.errors.message !== null
+            isEmpty: authors.list !== null ? authors.list.length === 0 : true,
+            hasError: authors.error.message !== null
         }}
-        if(page === 'members') {dataStatus.members = {
+        if(page === 'members' || (page === 'books' && bookEditor.book.id !== null)) {dataStatus.members = {
             isNull: members.list === null,
-            isEmpty: members.list !== null ? members.list.length : true,
-            hasError: members.errors.message !== null
+            isEmpty: members.list !== null ? members.list.length === 0 : true,
+            hasError: members.error.message !== null
         }}
 
         isEmpty = dataStatus[page].isEmpty
@@ -66,16 +77,29 @@ const LibraryContainer = props => {
         }
 
         if(hasError) {
-            let heading = props[hasError].errors.message
-            let description = props[hasError].errors.description
+            let heading = props[hasError].error.message
+            let description = props[hasError].error.description
             return (
                 <Status buttonHandler={manualUpdate} status="error" heading={heading} description={description}/>
             )
         }
-        if(isEmpty) {return <Status status="empty" buttonHandler={manualUpdate}/>}
+        if(isEmpty || isNull) {return <Status status="empty" buttonHandler={manualUpdate}/>}
 
+        const {options, sortFields} = props[page]
+        const {sortFieldChange, sortDirectionChange, bookSelectToEdit} = props
 
-        return <div>Library</div>
+        return (
+            <>
+                <Filter options={options} sortFields={sortFields}
+                        fieldChange={(key) => sortFieldChange(page, key)}
+                        dirChange={() => sortDirectionChange(page)}
+                        manualUpdate={manualUpdate}
+                />
+                <Library books={books} authors={authors} members={members} page={page}
+                         bookSelectToEdit={bookSelectToEdit}
+                         bookEditor={bookEditor}/>
+            </>
+        )
     }
 
     return <Redirect to="/404"/>
@@ -86,9 +110,10 @@ const mapStateToProps = state => ({
     pages: state.general.pages
 })
 const mapDispatchToProps = dispatch => ({
-    update: (listToUpdate) => dispatch(update(listToUpdate)),
     sortFieldChange: (list, key) => dispatch(sortFieldChange(list, key)),
     sortDirectionChange: (list) => dispatch(sortDirectionChange(list)),
+    update: (listToUpdate) => dispatch(update(listToUpdate)),
+    bookSelectToEdit: (id) => dispatch(bookSelectToEdit(id)),
     manualUpdate: () => dispatch(manualUpdate()),
 })
 

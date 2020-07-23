@@ -1,3 +1,4 @@
+import React from "react";
 import axios from "axios"
 
 async function responder(listToLoad) {
@@ -39,7 +40,7 @@ async function responder(listToLoad) {
         catch (e) {status = 0}
 
         if(status === 200) {
-            result[request.key].errors = {
+            result[request.key].error = {
                 message: null,
                 description: null
             }
@@ -53,24 +54,31 @@ async function responder(listToLoad) {
 
         result[request.key].list = null
         if(status === 404) {
-            result[request.key].errors = {
+            result[request.key].error = {
                 message: "The server said 404",
-                description: `Data not found at ${request.url}`
+                description: `${request.key} not found at ${request.url}`
             }
             continue
         }
 
         if(isNaN(status)) {
-            result[request.key].errors =  {
+            result[request.key].error =  {
                 message: `The server said ${status}`,
                 description: `We don't know what to do about it`
             }
             continue
         }
 
-        result[request.key].errors = {
-            message: "Network error",
-            description: `${server} not responding`
+        result[request.key].error = {
+            message: `Not responding`,
+            description: (
+                <>
+                    Current address {server}.<br/><br/>
+                    You probably want to change the server address to "localhost",
+                    you can do this in src/utils/responder.js<br/><br/>
+                    I should have done it, but seems like I forgot, sorry about that ¯\_(ツ)_/¯
+                </>
+            )
         }
     }
 

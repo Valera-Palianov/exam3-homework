@@ -6,7 +6,8 @@ import {
     faDizzy,
     faSyncAlt,
     faSortAlphaDown,
-    faSortAlphaDownAlt
+    faSortAlphaDownAlt,
+    faPencilAlt
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -16,5 +17,6 @@ library.add(
     faDizzy,
     faSyncAlt,
     faSortAlphaDown,
-    faSortAlphaDownAlt
+    faSortAlphaDownAlt,
+    faPencilAlt
 )

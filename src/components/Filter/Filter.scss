@@ -1,0 +1,33 @@
+.filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &__tools, &__options {
+    display: flex;
+  }
+
+  &__tool, &__option {
+    cursor: pointer;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s;
+    border-radius: 3px;
+
+    &:hover, &_active {
+      background-color: #334FB9;
+      color: white;
+    }
+  }
+  &__option {
+    padding: 0 6px;
+    margin-left: 6px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  &__tool {
+    width: 32px;
+  }
+}

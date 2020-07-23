@@ -3,7 +3,8 @@ import {
     UPDATE_DONE,
     MANUAL_UPDATE,
     SORT_DIRECTION_CHANGE,
-    SORT_FIELD_CHANGE
+    SORT_FIELD_CHANGE,
+    BOOK_SELECT_TO_EDIT
 } from "../actions/LibraryActions"
 
 import {getIdMap, sorter, reverser} from "../utils/helpers";
@@ -12,7 +13,7 @@ const initialState = {
     books: {
         list: null,
         idMap: {},
-        errors: {
+        error: {
             message: null,
             description: null
         },
@@ -34,7 +35,7 @@ const initialState = {
     authors: {
         list: null,
         idMap: {},
-        errors: {
+        error: {
             message: null,
             description: null
         },
@@ -64,7 +65,7 @@ const initialState = {
     members: {
         list: null,
         idMap: {},
-        errors: {
+        error: {
             message: null,
             description: null
         },
@@ -89,7 +90,24 @@ const initialState = {
     },
     flags: {
         updatingProcess: false,
-        needToUpdate: false,
+        needToUpdate: false
+    },
+    bookEditor: {
+        book: {
+            id: null,
+            title: null,
+            info: null,
+            authorId: null,
+            userId: null
+        },
+        flags: {
+          savingProcess: false,
+          savingError: false
+        },
+        error: {
+          message: null,
+          description: null
+        }
     }
 }
 
@@ -101,7 +119,7 @@ const libraryReducer = (state = initialState, action) => {
             for(let item of action.payload.listToUpdate) {
                 clearErrors[item] = {
                     ...state[item],
-                    errors: {
+                    error: {
                         message: null,
                         description: null
                     }
@@ -126,8 +144,8 @@ const libraryReducer = (state = initialState, action) => {
                 result[key] = {
                     ...state[key],
                     list: data[key].list,
-                    errors: {
-                        ...data[key].errors
+                    error: {
+                        ...data[key].error
                     },
                     options: {
                         activeSortField: "id",
@@ -145,6 +163,7 @@ const libraryReducer = (state = initialState, action) => {
                 ...state,
                 ...result,
                 flags: {
+                    ...state.flags,
                     updatingProcess: false,
                     needToUpdate: false
                 }
@@ -193,6 +212,17 @@ const libraryReducer = (state = initialState, action) => {
                         ...state[listToSort].options,
                         activeSortField: newField,
                         activeSortDirection: 'asc'
+                    }
+                }
+            }
+        case BOOK_SELECT_TO_EDIT:
+            return {
+                ...state,
+                bookEditor: {
+                    ...state.bookEditor,
+                    book: {
+                        ...state.bookEditor.book,
+                        ...state.books.list[state.books.idMap[action.payload.id]]
                     }
                 }
             }
