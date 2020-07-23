@@ -10,7 +10,8 @@ import {
     manualUpdate,
     sortFieldChange,
     sortDirectionChange,
-    bookSelectToEdit
+    bookSelectToEdit,
+    bookUnselectToEdit
 } from "../actions/LibraryActions"
 
 const LibraryContainer = props => {
@@ -86,7 +87,12 @@ const LibraryContainer = props => {
         if(isEmpty || isNull) {return <Status status="empty" buttonHandler={manualUpdate}/>}
 
         const {options, sortFields} = props[page]
-        const {sortFieldChange, sortDirectionChange, bookSelectToEdit} = props
+        const {
+            sortFieldChange,
+            sortDirectionChange,
+            bookSelectToEdit,
+            bookUnselectToEdit
+        } = props
 
         return (
             <>
@@ -97,6 +103,7 @@ const LibraryContainer = props => {
                 />
                 <Library books={books} authors={authors} members={members} page={page}
                          bookSelectToEdit={bookSelectToEdit}
+                         bookUnselectToEdit={bookUnselectToEdit}
                          bookEditor={bookEditor}/>
             </>
         )
@@ -114,6 +121,7 @@ const mapDispatchToProps = dispatch => ({
     sortDirectionChange: (list) => dispatch(sortDirectionChange(list)),
     update: (listToUpdate) => dispatch(update(listToUpdate)),
     bookSelectToEdit: (id) => dispatch(bookSelectToEdit(id)),
+    bookUnselectToEdit: () => dispatch(bookUnselectToEdit()),
     manualUpdate: () => dispatch(manualUpdate()),
 })
 

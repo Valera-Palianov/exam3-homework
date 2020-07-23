@@ -4,7 +4,8 @@ import {
     MANUAL_UPDATE,
     SORT_DIRECTION_CHANGE,
     SORT_FIELD_CHANGE,
-    BOOK_SELECT_TO_EDIT
+    BOOK_SELECT_TO_EDIT,
+    BOOK_UNSELECT_TO_EDIT
 } from "../actions/LibraryActions"
 
 import {getIdMap, sorter, reverser} from "../utils/helpers";
@@ -143,18 +144,23 @@ const libraryReducer = (state = initialState, action) => {
 
                 result[key] = {
                     ...state[key],
-                    list: data[key].list,
                     error: {
                         ...data[key].error
-                    },
-                    options: {
-                        activeSortField: "id",
-                        activeSortDirection: "asc",
                     }
                 }
                 if(data[key].list !== null) {
-                    result[key].idMap = getIdMap(data[key].list)
+                    const field = state[key].options.activeSortField
+                    const type = state[key].sortFields[field].type
+                    let sorted = sorter(data[key].list, field, type)
+
+                    if(state[key].options.activeSortDirection === 'desc') {
+                        sorted = reverser(sorted)
+                    }
+
+                    result[key].list = sorted
+                    result[key].idMap = getIdMap(sorted)
                 } else {
+                    result[key].list = null
                     result[key].idMap = {}
                 }
             }
@@ -223,6 +229,27 @@ const libraryReducer = (state = initialState, action) => {
                     book: {
                         ...state.bookEditor.book,
                         ...state.books.list[state.books.idMap[action.payload.id]]
+                    }
+                }
+            }
+        case BOOK_UNSELECT_TO_EDIT:
+            return {
+                ...state,
+                bookEditor: {
+                    book: {
+                        id: null,
+                        title: null,
+                        info: null,
+                        authorId: null,
+                        userId: null
+                    },
+                    flags: {
+                        savingProcess: false,
+                        savingError: false
+                    },
+                    error: {
+                        message: null,
+                        description: null
                     }
                 }
             }
