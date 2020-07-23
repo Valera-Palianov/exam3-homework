@@ -3,14 +3,15 @@ import List from "../List/List";
 
 const Member = props => {
 
-    const {firstName, lastName, phone, email, books} = props
+    const {firstName, lastName, phone, email, books, editHandler} = props
 
     const booksList = books.length ? books.join(' | ') : "none"
 
     const listProps = {
         title: `${firstName} ${lastName}`,
         subInfo: `Books: ${booksList}`,
-        subTitle: `${email} | ${phone}`
+        subTitle: `${email} | ${phone}`,
+        editHandler: editHandler
     }
 
     return (

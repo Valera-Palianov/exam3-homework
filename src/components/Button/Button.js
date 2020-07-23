@@ -8,7 +8,7 @@ const Button = props => {
     const classes = "button "+(props.customClass ? props.customClass : "")
 
     return (
-        <button className={classes} onClick={handler}>{title}</button>
+        <button disabled={props.disabled} className={classes} onClick={handler}>{title}</button>
     )
 }
 

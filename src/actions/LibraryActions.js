@@ -8,9 +8,6 @@ export const MANUAL_UPDATE = 'MANUAL_UPDATE'
 export const SORT_DIRECTION_CHANGE = 'SORT_DIRECTION_CHANGE'
 export const SORT_FIELD_CHANGE = 'SORT_FIELD_CHANGE'
 
-export const BOOK_SELECT_TO_EDIT = 'BOOK_SELECT_TO_EDIT'
-export const BOOK_UNSELECT_TO_EDIT = 'BOOK_UNSELECT_TO_EDIT'
-
 export const update = listToUpdate => {
     return dispatch => {
         dispatch(updateRequest(listToUpdate))
@@ -49,15 +46,4 @@ export const sortFieldChange = (list, key) => ({
         list:list,
         key: key
     }
-})
-
-export const bookSelectToEdit = id => ({
-    type: BOOK_SELECT_TO_EDIT,
-    payload: {
-        id: id
-    }
-})
-
-export const bookUnselectToEdit = () => ({
-    type: BOOK_UNSELECT_TO_EDIT
 })

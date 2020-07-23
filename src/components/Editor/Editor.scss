@@ -1,0 +1,21 @@
+.editor {
+  & > *:not(:last-child) {
+    margin-bottom: 15px;
+  }
+
+  &__buttons {
+    & > * {
+      margin-right: 15px;
+    }
+  }
+
+  &__textarea, &__select, &__input {
+    width: 100%;
+    resize: none;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #DADCE0;
+    border-radius: 3px;
+  }
+}

@@ -12,4 +12,13 @@
   &:hover {
     background-color: #263C8B;
   }
+
+  &:disabled {
+    background-color: #CFD0CF;
+    cursor: default;
+
+    &:hover {
+      background-color: #CFD0CF;
+    }
+  }
 }

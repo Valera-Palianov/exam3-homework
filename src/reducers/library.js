@@ -4,8 +4,6 @@ import {
     MANUAL_UPDATE,
     SORT_DIRECTION_CHANGE,
     SORT_FIELD_CHANGE,
-    BOOK_SELECT_TO_EDIT,
-    BOOK_UNSELECT_TO_EDIT
 } from "../actions/LibraryActions"
 
 import {getIdMap, sorter, reverser} from "../utils/helpers";
@@ -92,23 +90,6 @@ const initialState = {
     flags: {
         updatingProcess: false,
         needToUpdate: false
-    },
-    bookEditor: {
-        book: {
-            id: null,
-            title: null,
-            info: null,
-            authorId: null,
-            userId: null
-        },
-        flags: {
-          savingProcess: false,
-          savingError: false
-        },
-        error: {
-          message: null,
-          description: null
-        }
     }
 }
 
@@ -218,38 +199,6 @@ const libraryReducer = (state = initialState, action) => {
                         ...state[listToSort].options,
                         activeSortField: newField,
                         activeSortDirection: 'asc'
-                    }
-                }
-            }
-        case BOOK_SELECT_TO_EDIT:
-            return {
-                ...state,
-                bookEditor: {
-                    ...state.bookEditor,
-                    book: {
-                        ...state.bookEditor.book,
-                        ...state.books.list[state.books.idMap[action.payload.id]]
-                    }
-                }
-            }
-        case BOOK_UNSELECT_TO_EDIT:
-            return {
-                ...state,
-                bookEditor: {
-                    book: {
-                        id: null,
-                        title: null,
-                        info: null,
-                        authorId: null,
-                        userId: null
-                    },
-                    flags: {
-                        savingProcess: false,
-                        savingError: false
-                    },
-                    error: {
-                        message: null,
-                        description: null
                     }
                 }
             }

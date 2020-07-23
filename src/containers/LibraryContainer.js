@@ -10,9 +10,12 @@ import {
     manualUpdate,
     sortFieldChange,
     sortDirectionChange,
-    bookSelectToEdit,
-    bookUnselectToEdit
 } from "../actions/LibraryActions"
+
+import {
+    bookSelectToEdit,
+    memberSelectToEdit
+} from "../actions/EditorActions"
 
 const LibraryContainer = props => {
 
@@ -23,7 +26,7 @@ const LibraryContainer = props => {
     const {updatingProcess, needToUpdate} = props.flags
     const {update, manualUpdate} = props
 
-    const {bookEditor} = props
+    const {editBookId, editMemberId} = props
 
     let isNull = false
     let hasError = false
@@ -38,16 +41,20 @@ const LibraryContainer = props => {
             isEmpty: books.list !== null ? books.list.length === 0 : true,
             hasError: books.error.message !== null
         }
-        if(page === 'authors' || page === 'books') {dataStatus.authors = {
-            isNull: authors.list === null,
-            isEmpty: authors.list !== null ? authors.list.length === 0 : true,
-            hasError: authors.error.message !== null
-        }}
-        if(page === 'members' || (page === 'books' && bookEditor.book.id !== null)) {dataStatus.members = {
-            isNull: members.list === null,
-            isEmpty: members.list !== null ? members.list.length === 0 : true,
-            hasError: members.error.message !== null
-        }}
+        if(page === 'authors' || page === 'books' || (page === 'members' && editMemberId !== null)) {
+            dataStatus.authors = {
+                isNull: authors.list === null,
+                isEmpty: authors.list !== null ? authors.list.length === 0 : true,
+                hasError: authors.error.message !== null
+            }
+        }
+        if(page === 'members' || (page === 'books' && editBookId !== null)) {
+            dataStatus.members = {
+                isNull: members.list === null,
+                isEmpty: members.list !== null ? members.list.length === 0 : true,
+                hasError: members.error.message !== null
+            }
+        }
 
         isEmpty = dataStatus[page].isEmpty
         isNull = false
@@ -91,7 +98,7 @@ const LibraryContainer = props => {
             sortFieldChange,
             sortDirectionChange,
             bookSelectToEdit,
-            bookUnselectToEdit
+            memberSelectToEdit
         } = props
 
         return (
@@ -102,9 +109,11 @@ const LibraryContainer = props => {
                         manualUpdate={manualUpdate}
                 />
                 <Library books={books} authors={authors} members={members} page={page}
+                         memberSelectToEdit={memberSelectToEdit}
                          bookSelectToEdit={bookSelectToEdit}
-                         bookUnselectToEdit={bookUnselectToEdit}
-                         bookEditor={bookEditor}/>
+                         editMemberId={editMemberId}
+                         editBookId={editBookId}
+                />
             </>
         )
     }
@@ -114,14 +123,16 @@ const LibraryContainer = props => {
 
 const mapStateToProps = state => ({
     ...state.library,
-    pages: state.general.pages
+    pages: state.general.pages,
+    editBookId: state.editor.bookEditor.book.id,
+    editMemberId: state.editor.memberEditor.member.id
 })
 const mapDispatchToProps = dispatch => ({
     sortFieldChange: (list, key) => dispatch(sortFieldChange(list, key)),
     sortDirectionChange: (list) => dispatch(sortDirectionChange(list)),
     update: (listToUpdate) => dispatch(update(listToUpdate)),
-    bookSelectToEdit: (id) => dispatch(bookSelectToEdit(id)),
-    bookUnselectToEdit: () => dispatch(bookUnselectToEdit()),
+    bookSelectToEdit: (book) => dispatch(bookSelectToEdit(book)),
+    memberSelectToEdit: (member) => dispatch(memberSelectToEdit(member)),
     manualUpdate: () => dispatch(manualUpdate()),
 })
 
