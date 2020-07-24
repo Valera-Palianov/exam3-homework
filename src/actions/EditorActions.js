@@ -85,11 +85,12 @@ export const unselectToEdit = (editor) => ({
     }
 })
 
-export const change = (editor, name, value) => ({
+export const change = (editor, name, value, validation) => ({
     type: CHANGE,
     payload: {
         editor: editor,
         name: name,
-        value: value
+        value: value,
+        validation: validation
     }
 })

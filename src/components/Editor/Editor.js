@@ -5,22 +5,28 @@ import Status from "../Status/Status";
 
 const Editor = props => {
 
-    const {cancel, change, save, fields, flags, error} = props
+    const {cancel, change, save, fields, flags, error, validation} = props
 
     const fieldElements = fields.map(field => {
 
         const changeHandler = (e) => {
-            let canChange = true
+            const valid = {fail: false}
             if(field.validation) {
-                canChange = false
-                if(field.validation.test(e.target.value)) {
-                    canChange = true
-                }
+                valid.message = field.validation.message
+                valid.fail = !field.validation.regex.test(e.target.value)
             }
-            if(canChange) change(field.name, e.target.value)
+            change(field.name, e.target.value, valid)
         }
 
         let element = ''
+        let validationMessage = ''
+
+        if(field.validation && validation[field.name]) {
+            if(validation[field.name].fail) {
+                validationMessage = validation[field.name].message
+            }
+        }
+
         const elementProps = {
             name: field.name,
             value: field.value,
@@ -43,7 +49,12 @@ const Editor = props => {
                 element = <input {...elementProps} className={'editor__input'}/>
         }
 
-        return <div key={field.name} className={'editor__field'}>{element}</div>
+        return (
+            <div key={field.name} className={'editor__field'}>
+                <div className={'editor__element'}>{element}</div>
+                <div className={'editor__validation'}>{validationMessage}</div>
+            </div>
+        )
     })
 
     let overlay = ''
@@ -64,12 +75,20 @@ const Editor = props => {
         )
     }
 
+    let validationFail = false
+    for(let key in validation) {
+        if(validation[key].fail) {
+            validationFail = true
+            break
+        }
+    }
+
     return (
         <div className={'editor'}>
             {overlay}
             {fieldElements}
             <div className={'editor__buttons'}>
-                <Button disabled={flags.savingProcess} title={'Save'} clickHandler={save}/>
+                <Button disabled={flags.savingProcess || validationFail} title={'Save'} clickHandler={save}/>
                 <Button disabled={flags.savingProcess} title={'Cancel'} clickHandler={cancel}/>
             </div>
         </div>

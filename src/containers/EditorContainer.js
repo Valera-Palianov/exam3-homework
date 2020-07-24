@@ -18,12 +18,13 @@ const EditorContainer = props => {
 
         const save = () => {props.save(editor)}
         const cancel = () => {props.unselectToEdit(editor)}
-        const change = (name, value) => {props.change(editor, name, value)}
+        const change = (name, value, validation) => {props.change(editor, name, value, validation)}
 
         const {members, authors} = props
 
         const flags = props[editor].flags
         const error = props[editor].error
+        const validation = props[editor].validation
 
         let fields
         if(editor === 'book') {
@@ -34,13 +35,19 @@ const EditorContainer = props => {
                     name: 'title',
                     value: book.title,
                     type: 'text',
-                    validation: /^([^@#$%^&<>])+$/mi
+                    validation: {
+                        regex: /^([a-zA-Zа-яА-Я0-9:., !—-])+$/mi,
+                        message: "The field cannot be empty and can only contain letters, numbers and punctuation marks"
+                    }
                 },
                 {
                     name: 'info',
                     value: book.info,
                     type: 'textarea',
-                    validation: /^(.)+$/mi
+                    validation: {
+                        regex: /^(.)+$/mi,
+                        message: "The field cannot be empty"
+                    }
                 },
                 {
                     name: 'authorId',
@@ -72,25 +79,37 @@ const EditorContainer = props => {
                     name: 'email',
                     value: member.email,
                     type: 'text',
-                    validation: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    validation: {
+                        regex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                        message: "The field should look like Email"
+                    }
                 },
                 {
                     name: 'phone',
                     value: member.phone,
                     type: 'text',
-                    validation: /^([0-9)(x. -])+$/mi
+                    validation: {
+                        regex: /^([0-9)(x. -])+$/mi,
+                        message: "The field cannot be empty and can only contain numbers, brakets, dots, dash, letter 'x'... Oh, wtf with this numbers"
+                    }
                 },
                 {
                     name: 'firstName',
                     value: member.firstName,
                     type: 'text',
-                    validation: /^([a-zA-Zа-яА-Я])+$/mi
+                    validation: {
+                        regex: /^([a-zA-Zа-яА-Я])+$/mi,
+                        message: "The field cannot be empty and can only contain letters"
+                    }
                 },
                 {
                     name: 'lastName',
                     value: member.lastName,
                     type: 'text',
-                    validation: /^([a-zA-Zа-яА-Я])+$/mi
+                    validation: {
+                        regex: /^([a-zA-Zа-яА-Я])+$/mi,
+                        message: "The field cannot be empty and can only contain letters"
+                    }
                 }
             ]
         }
@@ -103,6 +122,7 @@ const EditorContainer = props => {
                 flags={flags}
                 error={error}
                 fields={fields}
+                validation={validation}
             />
         )
 
@@ -121,7 +141,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
     unselectToEdit: (editor) => dispatch(unselectToEdit(editor)),
-    change: (editor, name, value) => dispatch(change(editor, name, value)),
+    change: (editor, name, value, validation) => dispatch(change(editor, name, value, validation)),
     save: (editor) => dispatch(save(editor))
 })
 

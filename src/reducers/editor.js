@@ -21,7 +21,8 @@ const initialState = {
         error: {
             message: null,
             description: null
-        }
+        },
+        validation: {}
     },
     member: {
         object: {
@@ -35,7 +36,8 @@ const initialState = {
         error: {
             message: null,
             description: null
-        }
+        },
+        validation: {}
     }
 }
 
@@ -73,13 +75,15 @@ const editorReducer = (state = initialState, action) => {
                         ...state[unselectEditor].error,
                         message: null,
                         description: null
-                    }
+                    },
+                    validation: {}
                 }
             }
         case CHANGE:
 
             const changeEditor = action.payload.editor
             const name = action.payload.name
+            const validation = action.payload.validation
             let value = action.payload.value
             if(name === 'userId' && value === 'none') value = null
 
@@ -90,6 +94,10 @@ const editorReducer = (state = initialState, action) => {
                     object: {
                         ...state[changeEditor].object,
                         [name]: value
+                    },
+                    validation: {
+                        ...state[changeEditor].validation,
+                        [name]: validation
                     }
                 }
             }
