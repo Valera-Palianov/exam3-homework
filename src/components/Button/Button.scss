@@ -1,0 +1,24 @@
+.button {
+  border: none;
+  border-radius: 3px;
+  background-color: #334FB9;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s;
+  padding: 6px 12px;
+
+  &:hover {
+    background-color: #263C8B;
+  }
+
+  &:disabled {
+    background-color: #CFD0CF;
+    cursor: default;
+
+    &:hover {
+      background-color: #CFD0CF;
+    }
+  }
+}

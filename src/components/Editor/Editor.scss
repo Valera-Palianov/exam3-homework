@@ -1,0 +1,41 @@
+.editor {
+
+  position: relative;
+
+  &__validation {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+
+  &__overlay {
+    width: 400px;
+    height: 200px;
+    position: absolute;
+    top: calc(50% - 100px);
+    left: calc(50% - 200px);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #DADCE0;
+    border-radius: 3px;
+    z-index: 10;
+  }
+
+  & > *:not(:last-child) {
+    margin-bottom: 15px;
+  }
+
+  &__buttons {
+    & > * {
+      margin-right: 15px;
+    }
+  }
+
+  &__textarea, &__select, &__input {
+    width: 100%;
+    resize: none;
+    box-sizing: border-box;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #DADCE0;
+    border-radius: 3px;
+  }
+}

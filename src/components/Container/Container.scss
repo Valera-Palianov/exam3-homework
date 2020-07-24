@@ -1,0 +1,31 @@
+.container {
+  background-color: #fff;
+  border-radius: 3px;
+  border: 1px solid #C4C4C4;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
+  &__heading {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #888888;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  &__item {
+    padding: 15px;
+
+    &_rp {
+      padding: 0;
+    }
+
+    &:not(:first-child) {
+      padding-top: 0;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #C4C4C4;
+    }
+  }
+}
