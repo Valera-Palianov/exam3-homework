@@ -20,8 +20,8 @@ const New = ({editor, handler}) => {
             id: 'new',
             firstName: 'Name',
             lastName: 'Surname',
-            email: 'Email',
-            phone: 'Phone',
+            email: 'Email@email.com',
+            phone: '8 (777) 666-55-44',
             books: []
         }
     }

@@ -103,7 +103,11 @@ const EditorContainer = props => {
             {
                 name: 'birthday',
                 value: author.birthday,
-                type: 'date'
+                type: 'date',
+                validation: {
+                    regex: /^(19|20)\d\d([- /.])(0[1-9]|1[012])\2(0[1-9]|[12][0-9]|3[01])$/,
+                    message: 'Oh, please, just use a form'
+                }
             }
         ]
 
