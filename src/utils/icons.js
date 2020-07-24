@@ -8,7 +8,8 @@ import {
     faSortAlphaDown,
     faSortAlphaDownAlt,
     faPencilAlt,
-    faCheck
+    faCheck,
+    faPlus
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -20,5 +21,6 @@ library.add(
     faSortAlphaDown,
     faSortAlphaDownAlt,
     faPencilAlt,
-    faCheck
+    faCheck,
+    faPlus
 )

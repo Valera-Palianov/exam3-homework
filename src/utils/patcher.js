@@ -4,11 +4,24 @@ import {server} from "./server"
 async function patcher(toLoad) {
 
     const {editor, id, object} = toLoad
-    const url = `${server}/${editor === 'member' ? 'user' : editor}/${id}`
-    const request = {
-        editor: editor,
-        url: url,
-        request: axios.patch(url, object)
+    let request = {
+        editor: editor
+    }
+    if(id === 'new') {
+        const url = `${server}/${editor === 'member' ? 'user' : editor}`
+        delete object.id
+        request = {
+            ...request,
+            url: url,
+            request: axios.post(url, object)
+        }
+    } else {
+        const url = `${server}/${editor === 'member' ? 'user' : editor}/${id}`
+        request = {
+            ...request,
+            url: url,
+            request: axios.patch(url, object)
+        }
     }
 
     let response

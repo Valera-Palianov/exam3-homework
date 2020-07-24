@@ -23,7 +23,7 @@ const LibraryContainer = props => {
     const {updatingProcess, needToUpdate} = props.flags
     const {update, manualUpdate} = props
 
-    const {editBookId, editMemberId} = props
+    const {editBookId, editMemberId, editAuthorId} = props
 
     let isNull = false
     let hasError = false
@@ -106,6 +106,7 @@ const LibraryContainer = props => {
                          selectToEdit={selectToEdit}
                          editMemberId={editMemberId}
                          editBookId={editBookId}
+                         editAuthorId={editAuthorId}
                          bookSaving={bookSaving}
                          memberSaving={memberSaving}
                 />
@@ -121,6 +122,7 @@ const mapStateToProps = state => ({
     pages: state.general.pages,
     editBookId: state.editor.book.object.id,
     editMemberId: state.editor.member.object.id,
+    editAuthorId: state.editor.author.object.id,
     bookSaving: state.editor.book.flags.savingProcess,
     memberSaving: state.editor.member.flags.savingProcess,
 })

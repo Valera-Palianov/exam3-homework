@@ -24,6 +24,21 @@ const initialState = {
         },
         validation: {}
     },
+    author: {
+        object: {
+            id: null
+        },
+        flags: {
+            savingProcess: false,
+            savingError: false,
+            showOverlay: false
+        },
+        error: {
+            message: null,
+            description: null
+        },
+        validation: {}
+    },
     member: {
         object: {
             id: null

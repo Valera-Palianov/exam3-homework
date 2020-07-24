@@ -10,10 +10,9 @@ const Editor = props => {
     const fieldElements = fields.map(field => {
 
         const changeHandler = (e) => {
-            const valid = {fail: false}
+            let valid = true
             if(field.validation) {
-                valid.message = field.validation.message
-                valid.fail = !field.validation.regex.test(e.target.value)
+                valid = field.validation.regex.test(e.target.value)
             }
             change(field.name, e.target.value, valid)
         }
@@ -21,9 +20,9 @@ const Editor = props => {
         let element = ''
         let validationMessage = ''
 
-        if(field.validation && validation[field.name]) {
-            if(validation[field.name].fail) {
-                validationMessage = validation[field.name].message
+        if(field.validation) {
+            if(validation[field.name] === false) {
+                validationMessage = field.validation.message
             }
         }
 
@@ -45,6 +44,9 @@ const Editor = props => {
             case 'textarea':
                 element = <textarea {...elementProps} className={'editor__textarea'}/>
                 break
+            case 'date':
+                element =  <input type={'date'} {...elementProps} className={'editor__input'}/>
+                break
             default:
                 element = <input {...elementProps} className={'editor__input'}/>
         }
@@ -61,7 +63,7 @@ const Editor = props => {
     if(flags.showOverlay) {
         let status
         if(flags.savingProcess) {
-            status = <Status />
+            status = <Status heading={'Sending...'}/>
         } else if (flags.savingError) {
             status = <Status status={'error'} heading={error.message} description={error.description}/>
         } else {
@@ -77,7 +79,7 @@ const Editor = props => {
 
     let validationFail = false
     for(let key in validation) {
-        if(validation[key].fail) {
+        if(!validation[key]) {
             validationFail = true
             break
         }
@@ -88,7 +90,7 @@ const Editor = props => {
             {overlay}
             {fieldElements}
             <div className={'editor__buttons'}>
-                <Button disabled={flags.savingProcess || validationFail} title={'Save'} clickHandler={save}/>
+                <Button disabled={flags.savingProcess || validationFail} title={'Send'} clickHandler={save}/>
                 <Button disabled={flags.savingProcess} title={'Cancel'} clickHandler={cancel}/>
             </div>
         </div>

@@ -13,124 +13,154 @@ const EditorContainer = props => {
 
     const {editor} = props
 
-    if(editor === 'book' || editor === 'member') {
+    const save = () => {props.save(editor)}
+    const cancel = () => {props.unselectToEdit(editor)}
+    const change = (name, value, validation) => {props.change(editor, name, value, validation)}
 
+    const {members, authors} = props
 
-        const save = () => {props.save(editor)}
-        const cancel = () => {props.unselectToEdit(editor)}
-        const change = (name, value, validation) => {props.change(editor, name, value, validation)}
+    const flags = props[editor].flags
+    const error = props[editor].error
+    const validation = props[editor].validation
 
-        const {members, authors} = props
+    let fields
+    if(editor === 'book') {
+        const book = props.book.object
 
-        const flags = props[editor].flags
-        const error = props[editor].error
-        const validation = props[editor].validation
-
-        let fields
-        if(editor === 'book') {
-            const book = props.book.object
-
-            fields = [
-                {
-                    name: 'title',
-                    value: book.title,
-                    type: 'text',
-                    validation: {
-                        regex: /^([a-zA-Zа-яА-Я0-9:., !—-])+$/mi,
-                        message: "The field cannot be empty and can only contain letters, numbers and punctuation marks"
-                    }
-                },
-                {
-                    name: 'info',
-                    value: book.info,
-                    type: 'textarea',
-                    validation: {
-                        regex: /^(.)+$/mi,
-                        message: "The field cannot be empty"
-                    }
-                },
-                {
-                    name: 'authorId',
-                    value: book.authorId,
-                    type: 'select',
-                    options: authors.list.map(author => ({
-                        name: `${author.firstName} ${author.lastName}`,
-                        value: author.id
+        fields = [
+            {
+                name: 'title',
+                value: book.title,
+                type: 'text',
+                validation: {
+                    regex: /^([a-zA-Zа-яА-Я0-9:., !—-])+$/mi,
+                    message: "The field cannot be empty and can only contain letters, numbers and punctuation marks"
+                }
+            },
+            {
+                name: 'info',
+                value: book.info,
+                type: 'textarea',
+                validation: {
+                    regex: /^(.)+$/mi,
+                    message: "The field cannot be empty"
+                }
+            },
+            {
+                name: 'authorId',
+                value: book.authorId,
+                type: 'select',
+                options: authors.list.map(author => ({
+                    name: `${author.firstName} ${author.lastName}`,
+                    value: author.id
+                }))
+            },
+            {
+                name: "userId",
+                value: book.userId === null ? 'none' : book.userId,
+                type: 'select',
+                options: [
+                    {name: '---', value: 'none'},
+                    ...members.list.map(member => ({
+                        name: `${member.firstName} ${member.lastName}`,
+                        value: member.id
                     }))
-                },
-                {
-                    name: "userId",
-                    value: book.userId === null ? 'none' : book.userId,
-                    type: 'select',
-                    options: [
-                        {name: '---', value: 'none'},
-                        ...members.list.map(member => ({
-                            name: `${member.firstName} ${member.lastName}`,
-                            value: member.id
-                        }))
-                    ]
-                }
-            ]
-        } else {
-            const member = props.member.object
+                ]
+            }
+        ]
+    } else if(editor === 'author') {
 
-            fields = [
-                {
-                    name: 'email',
-                    value: member.email,
-                    type: 'text',
-                    validation: {
-                        regex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message: "The field should look like Email"
-                    }
-                },
-                {
-                    name: 'phone',
-                    value: member.phone,
-                    type: 'text',
-                    validation: {
-                        regex: /^([0-9)(x. -])+$/mi,
-                        message: "The field cannot be empty and can only contain numbers, brakets, dots, dash, letter 'x'... Oh, wtf with this numbers"
-                    }
-                },
-                {
-                    name: 'firstName',
-                    value: member.firstName,
-                    type: 'text',
-                    validation: {
-                        regex: /^([a-zA-Zа-яА-Я])+$/mi,
-                        message: "The field cannot be empty and can only contain letters"
-                    }
-                },
-                {
-                    name: 'lastName',
-                    value: member.lastName,
-                    type: 'text',
-                    validation: {
-                        regex: /^([a-zA-Zа-яА-Я])+$/mi,
-                        message: "The field cannot be empty and can only contain letters"
-                    }
-                }
-            ]
-        }
+        const author = props.author.object
 
-        return (
-            <Editor
-                save={save}
-                change={change}
-                cancel={cancel}
-                flags={flags}
-                error={error}
-                fields={fields}
-                validation={validation}
-            />
-        )
+        fields = [
+            {
+                name: 'firstName',
+                value: author.firstName,
+                type: 'text',
+                validation: {
+                    regex: /^([a-zA-Zа-яА-Я])+$/mi,
+                    message: "The field cannot be empty and can only contain letters"
+                }
+            },
+            {
+                name: 'lastName',
+                value: author.lastName,
+                type: 'text',
+                validation: {
+                    regex: /^([a-zA-Zа-яА-Я])+$/mi,
+                    message: "The field cannot be empty and can only contain letters"
+                }
+            },
+            {
+                name: 'info',
+                value: author.info,
+                type: 'textarea',
+                validation: {
+                    regex: /^(.)+$/mi,
+                    message: "The field cannot be empty"
+                }
+            },
+            {
+                name: 'birthday',
+                value: author.birthday,
+                type: 'date'
+            }
+        ]
 
     } else {
+        const member = props.member.object
 
-        return <div className={"editor"}>Editor can edit only books or members</div>
-
+        fields = [
+            {
+                name: 'email',
+                value: member.email,
+                type: 'text',
+                validation: {
+                    regex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                    message: "The field should look like Email"
+                }
+            },
+            {
+                name: 'phone',
+                value: member.phone,
+                type: 'text',
+                validation: {
+                    regex: /^([0-9)(x. -])+$/mi,
+                    message: "The field cannot be empty and can only contain numbers, brakets, dots, dash, letter 'x'... Oh, wtf with this numbers"
+                }
+            },
+            {
+                name: 'firstName',
+                value: member.firstName,
+                type: 'text',
+                validation: {
+                    regex: /^([a-zA-Zа-яА-Я])+$/mi,
+                    message: "The field cannot be empty and can only contain letters"
+                }
+            },
+            {
+                name: 'lastName',
+                value: member.lastName,
+                type: 'text',
+                validation: {
+                    regex: /^([a-zA-Zа-яА-Я])+$/mi,
+                    message: "The field cannot be empty and can only contain letters"
+                }
+            }
+        ]
     }
+
+    return (
+        <Editor
+            save={save}
+            change={change}
+            cancel={cancel}
+            flags={flags}
+            error={error}
+            fields={fields}
+            validation={validation}
+        />
+    )
 }
 
 const mapStateToProps = state => ({

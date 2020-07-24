@@ -5,7 +5,10 @@ const Book = props => {
 
     const {title, info, userId, author, editHandler} = props
     const aviable = userId === null ? "Available" : "Not available"
-    const authorName = `${author.firstName} ${author.lastName}`
+    let authorName = ''
+    if(author) {
+        authorName = `${author.firstName} ${author.lastName}`
+    }
 
     const listProps = {
         title: title,
