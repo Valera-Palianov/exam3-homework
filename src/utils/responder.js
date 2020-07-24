@@ -1,8 +1,8 @@
 import React from "react";
 import axios from "axios"
+import {server} from "./server";
 
 async function responder(listToLoad) {
-    const server = 'http://192.168.99.100:5555/apiV1'
     const paths = {
         books: "/book",
         authors: "/author",
@@ -75,7 +75,7 @@ async function responder(listToLoad) {
                 <>
                     Current address {server}.<br/><br/>
                     You probably want to change the server address to "localhost",
-                    you can do this in src/utils/responder.js<br/><br/>
+                    you can do this in src/utils/server.js<br/><br/>
                     I should have done it, but seems like I forgot, sorry about that ¯\_(ツ)_/¯
                 </>
             )

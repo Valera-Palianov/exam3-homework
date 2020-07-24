@@ -4,25 +4,30 @@ import {connect} from "react-redux"
 import Editor from "../components/Editor/Editor";
 
 import {
-    bookUnselectToEdit,
-    memberUnselectToEdit,
-    bookChange,
-    bookSave
+    unselectToEdit,
+    change,
+    save
 } from "../actions/EditorActions";
 
 const EditorContainer = props => {
 
-    const {mode} = props
+    const {editor} = props
 
-    if(mode === 'book' || mode === 'member') {
+    if(editor === 'book' || editor === 'member') {
 
-        const {bookUnselectToEdit, memberUnselectToEdit, bookChange, bookSave} = props
+
+        const save = () => {props.save(editor)}
+        const cancel = () => {props.unselectToEdit(editor)}
+        const change = (name, value) => {props.change(editor, name, value)}
+
         const {members, authors} = props
-        const {bookEditor} = props
 
-        let cancel, change, fields, saveFlag, save
-        if(mode === 'book') {
-            const book = bookEditor.book
+        const flags = props[editor].flags
+        const error = props[editor].error
+
+        let fields
+        if(editor === 'book') {
+            const book = props.book.object
 
             fields = [
                 {
@@ -51,10 +56,7 @@ const EditorContainer = props => {
                     value: book.userId === null ? 'none' : book.userId,
                     type: 'select',
                     options: [
-                        {
-                            name: '---',
-                            value: 'none'
-                        },
+                        {name: '---', value: 'none'},
                         ...members.list.map(member => ({
                             name: `${member.firstName} ${member.lastName}`,
                             value: member.id
@@ -62,18 +64,52 @@ const EditorContainer = props => {
                     ]
                 }
             ]
-            saveFlag = bookEditor.flags.savingProcess
-            cancel = bookUnselectToEdit
-            change = bookChange
-            save = bookSave
         } else {
-            fields = []
-            cancel = memberUnselectToEdit
+            const member = props.member.object
+
+            fields = [
+                {
+                    name: 'email',
+                    value: member.email,
+                    type: 'text',
+                    validation: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                },
+                {
+                    name: 'phone',
+                    value: member.phone,
+                    type: 'text',
+                    validation: /^([0-9)(x. -])+$/mi
+                },
+                {
+                    name: 'firstName',
+                    value: member.firstName,
+                    type: 'text',
+                    validation: /^([a-zA-Zа-яА-Я])+$/mi
+                },
+                {
+                    name: 'lastName',
+                    value: member.lastName,
+                    type: 'text',
+                    validation: /^([a-zA-Zа-яА-Я])+$/mi
+                }
+            ]
         }
 
-        return <Editor save={save} saveFlag={saveFlag} fields={fields} change={change} cancel={cancel}/>
+        return (
+            <Editor
+                save={save}
+                change={change}
+                cancel={cancel}
+                flags={flags}
+                error={error}
+                fields={fields}
+            />
+        )
+
     } else {
+
         return <div className={"editor"}>Editor can edit only books or members</div>
+
     }
 }
 
@@ -84,10 +120,9 @@ const mapStateToProps = state => ({
     members: state.library.members
 })
 const mapDispatchToProps = dispatch => ({
-    bookUnselectToEdit: () => dispatch(bookUnselectToEdit()),
-    memberUnselectToEdit: () => dispatch(memberUnselectToEdit()),
-    bookChange: (name, value) => dispatch(bookChange(name, value)),
-    bookSave: () => dispatch(bookSave())
+    unselectToEdit: (editor) => dispatch(unselectToEdit(editor)),
+    change: (editor, name, value) => dispatch(change(editor, name, value)),
+    save: (editor) => dispatch(save(editor))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorContainer)

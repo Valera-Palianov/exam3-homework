@@ -1,62 +1,94 @@
-import axios from "axios"
+import patcher from "../utils/patcher"
+import {manualUpdate} from "./LibraryActions";
 
-export const BOOK_SELECT_TO_EDIT = 'BOOK_SELECT_TO_EDIT'
-export const BOOK_UNSELECT_TO_EDIT = 'BOOK_UNSELECT_TO_EDIT'
-export const BOOK_CHANGE = 'BOOK_CHANGE'
+export const UNSELECT_TO_EDIT = 'UNSELECT_TO_EDIT'
+export const SAVE_REQUEST = 'SAVE_REQUEST'
+export const SAVE_SUCCESS = 'SAVE_SUCCESS'
+export const SAVE_FAILURE = 'SAVE_FAILURE'
+export const SELECT_TO_EDIT = 'SELECT_TO_EDIT'
+export const CHANGE = 'CHANGE'
+export const HIDE_OVERLAY = 'HIDE_OVERLAY'
 
-export const BOOK_SAVE_REQUEST = 'BOOK_SAVE_REQUEST'
+export const save = (editor) => {
+    return (dispatch, getState) => {
+        dispatch(saveRequest(editor))
 
-export const MEMBER_SELECT_TO_EDIT = "MEMBER_SELECT_TO_EDIT"
-export const MEMBER_UNSELECT_TO_EDIT = "MEMBER_UNSELECT_TO_EDIT"
+        const state = getState()
+        const object = state.editor[editor].object
+        const toSave = {
+            id: object.id,
+            editor: editor,
+            object: object
+        }
 
-export const bookSave = () => {
-    return (dispatch) => {
-        dispatch(bookSaveRequest())
-        /*
-        const {editor} = getState()
-        const book = editor.bookEditor.book
-
-        const  URL = 'http://192.168.99.100:5555/apiV1/book/'+book.id
-
-        axios.patch(URL, book)
-            .then((response) => {
-                console.log(response);
-            });
-
-         */
+        patcher(toSave).then(res => {
+            if(res.status === 'ok') {
+                dispatch(saveSuccess(editor))
+                setTimeout(() => {
+                    dispatch(hideOverlay(editor))
+                    dispatch(unselectToEdit(editor))
+                    dispatch(manualUpdate())
+                }, 1500)
+            } else {
+                dispatch(saveFailure(editor, res.message, res.description))
+                setTimeout(() => {
+                    dispatch(hideOverlay(editor))
+                }, 3000)
+            }
+        })
 
     }
 }
 
-const bookSaveRequest = () => ({
-    type: BOOK_SAVE_REQUEST
-})
-
-export const bookSelectToEdit = book => ({
-    type: BOOK_SELECT_TO_EDIT,
+const hideOverlay = (editor) => ({
+    type: HIDE_OVERLAY,
     payload: {
-        book: book
+        editor: editor
     }
 })
 
-export const bookUnselectToEdit = () => ({
-    type: BOOK_UNSELECT_TO_EDIT
-})
-
-export const memberSelectToEdit = member => ({
-    type: MEMBER_SELECT_TO_EDIT,
+const saveSuccess = (editor) => ({
+    type: SAVE_SUCCESS,
     payload: {
-        member: member
+        editor: editor
     }
 })
 
-export const memberUnselectToEdit = () => ({
-    type: MEMBER_UNSELECT_TO_EDIT
+const saveFailure = (editor, message, description) => ({
+    type: SAVE_FAILURE,
+    payload: {
+        editor: editor,
+        message: message,
+        description: description
+    }
 })
 
-export const bookChange = (name, value) => ({
-    type: BOOK_CHANGE,
+const saveRequest = (editor) => ({
+    type: SAVE_REQUEST,
     payload: {
+        editor: editor
+    }
+})
+
+export const selectToEdit = (editor, object) => ({
+    type: SELECT_TO_EDIT,
+    payload: {
+        editor: editor,
+        object: object
+    }
+})
+
+export const unselectToEdit = (editor) => ({
+    type: UNSELECT_TO_EDIT,
+    payload: {
+        editor: editor
+    }
+})
+
+export const change = (editor, name, value) => ({
+    type: CHANGE,
+    payload: {
+        editor: editor,
         name: name,
         value: value
     }

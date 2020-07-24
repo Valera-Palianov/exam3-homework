@@ -1,4 +1,19 @@
 .editor {
+
+  position: relative;
+
+  &__overlay {
+    width: 400px;
+    height: 200px;
+    position: absolute;
+    top: calc(50% - 100px);
+    left: calc(50% - 200px);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid #DADCE0;
+    border-radius: 3px;
+    z-index: 10;
+  }
+
   & > *:not(:last-child) {
     margin-bottom: 15px;
   }

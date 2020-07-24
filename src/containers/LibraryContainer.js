@@ -12,10 +12,7 @@ import {
     sortDirectionChange,
 } from "../actions/LibraryActions"
 
-import {
-    bookSelectToEdit,
-    memberSelectToEdit
-} from "../actions/EditorActions"
+import {selectToEdit} from "../actions/EditorActions"
 
 const LibraryContainer = props => {
 
@@ -94,12 +91,9 @@ const LibraryContainer = props => {
         if(isEmpty || isNull) {return <Status status="empty" buttonHandler={manualUpdate}/>}
 
         const {options, sortFields} = props[page]
-        const {
-            sortFieldChange,
-            sortDirectionChange,
-            bookSelectToEdit,
-            memberSelectToEdit
-        } = props
+        const {sortFieldChange, sortDirectionChange} = props
+
+        const {selectToEdit, bookSaving, memberSaving} = props
 
         return (
             <>
@@ -109,10 +103,11 @@ const LibraryContainer = props => {
                         manualUpdate={manualUpdate}
                 />
                 <Library books={books} authors={authors} members={members} page={page}
-                         memberSelectToEdit={memberSelectToEdit}
-                         bookSelectToEdit={bookSelectToEdit}
+                         selectToEdit={selectToEdit}
                          editMemberId={editMemberId}
                          editBookId={editBookId}
+                         bookSaving={bookSaving}
+                         memberSaving={memberSaving}
                 />
             </>
         )
@@ -124,15 +119,16 @@ const LibraryContainer = props => {
 const mapStateToProps = state => ({
     ...state.library,
     pages: state.general.pages,
-    editBookId: state.editor.bookEditor.book.id,
-    editMemberId: state.editor.memberEditor.member.id
+    editBookId: state.editor.book.object.id,
+    editMemberId: state.editor.member.object.id,
+    bookSaving: state.editor.book.flags.savingProcess,
+    memberSaving: state.editor.member.flags.savingProcess,
 })
 const mapDispatchToProps = dispatch => ({
+    selectToEdit: (editor, object) => dispatch(selectToEdit(editor, object)),
     sortFieldChange: (list, key) => dispatch(sortFieldChange(list, key)),
     sortDirectionChange: (list) => dispatch(sortDirectionChange(list)),
     update: (listToUpdate) => dispatch(update(listToUpdate)),
-    bookSelectToEdit: (book) => dispatch(bookSelectToEdit(book)),
-    memberSelectToEdit: (member) => dispatch(memberSelectToEdit(member)),
     manualUpdate: () => dispatch(manualUpdate()),
 })
 

@@ -31,6 +31,12 @@ const Status = ({status, icon, spin, heading, description, buttonHandler, button
             heading: "Error",
             description: "Something went wrong"
         },
+        ok: {
+            icon: "check",
+            spin: false,
+            heading: "Done it!",
+            description: "Everything OK"
+        },
         ops: {
             icon: "dizzy",
             spin: false,

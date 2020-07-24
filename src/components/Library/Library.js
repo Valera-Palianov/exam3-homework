@@ -9,30 +9,62 @@ import Editor from "../../containers/EditorContainer";
 
 const Library = props => {
     const {page, books, authors} = props
-    const {bookSelectToEdit, memberSelectToEdit, editBookId, editMemberId} = props
+    const {selectToEdit, editBookId, editMemberId, bookSaving, memberSaving} = props
 
     let list = props[page].list.map(item => {
-        switch (page) {
-            case "books":
-                const author = authors.list[authors.idMap[item.authorId]]
-                if(editBookId === item.id) {
-                    return <Editor mode={'book'} key={item.id} />
-                } else {
-                    return <Book key={item.id} {...item} author={author} editHandler={() => bookSelectToEdit(item)}/>
+
+        if(page === 'books') {
+            const author = authors.list[authors.idMap[item.authorId]]
+            const bookEditor = 'book'
+
+            if(editBookId === item.id) {
+
+                return <Editor editor={bookEditor} key={item.id} />
+
+            } else {
+
+                let bookEditHandler = false
+                if(!bookSaving) {
+                    bookEditHandler = () => selectToEdit(bookEditor, item)
                 }
-            case 'authors':
-                const booksListA = item.books.map(book => {return books.list[books.idMap[book.id]].title})
-                return <Author key={item.id} {...item} books={booksListA}/>
-            case 'members':
-                const booksListM = item.books.map(book => {return books.list[books.idMap[book.id]].title})
-                if(editMemberId === item.id) {
-                    return <Editor mode={'member'} key={item.id} />
-                } else {
-                    return <Member key={item.id} {...item} books={booksListM} editHandler={() => memberSelectToEdit(item)}/>
-                }
-            default:
-                return <div><List.Item title={"Ghost item"}/></div>
+                return <Book key={item.id} {...item} author={author} editHandler={bookEditHandler}/>
+            }
         }
+
+        if(page === 'authors') {
+
+            const booksListA = item.books.map(book => {
+                return books.list[books.idMap[book.id]].title
+            })
+
+            return <Author key={item.id} {...item} books={booksListA}/>
+
+        }
+
+        if(page === 'members') {
+
+            const booksListM = item.books.map(book => {
+                return books.list[books.idMap[book.id]].title
+            })
+            const memberEditor = 'member'
+
+            if(editMemberId === item.id) {
+
+                return <Editor editor={memberEditor} key={item.id} />
+
+            } else {
+
+                let memberEditHandler = false
+                if(!memberSaving) {
+                    memberEditHandler = () => selectToEdit(memberEditor, item)
+                }
+                return <Member key={item.id} {...item} books={booksListM} editHandler={memberEditHandler}/>
+
+            }
+        }
+
+        return <div>Ghost</div>
+
     })
 
     return (
