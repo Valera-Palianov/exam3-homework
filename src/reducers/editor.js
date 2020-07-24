@@ -68,7 +68,8 @@ const editorReducer = (state = initialState, action) => {
                     ...state[selectEditor],
                     object: {
                         ...objectToEdit
-                    }
+                    },
+                    validation: {}
                 }
             }
 
