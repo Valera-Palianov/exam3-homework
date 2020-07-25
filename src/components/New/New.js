@@ -8,8 +8,8 @@ const New = ({editor, handler}) => {
     if(editor === 'book') {
         object = {
             id: 'new',
-            title: 'Title',
-            info: 'Info',
+            title: '',
+            info: '',
             authorId: 1,
             userId: null
         }
@@ -18,10 +18,10 @@ const New = ({editor, handler}) => {
     if(editor === 'member') {
         object = {
             id: 'new',
-            firstName: 'Name',
-            lastName: 'Surname',
-            email: 'Email@email.com',
-            phone: '8 (777) 666-55-44',
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
             books: []
         }
     }
@@ -29,9 +29,9 @@ const New = ({editor, handler}) => {
     if(editor === 'author') {
         object = {
             id: 'new',
-            firstName: 'Name',
-            lastName: 'Surname',
-            info: 'Info',
+            firstName: '',
+            lastName: '',
+            info: '',
             birthday: '2000-01-01',
             books: []
         }
