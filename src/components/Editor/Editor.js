@@ -27,7 +27,9 @@ const Editor = props => {
         }
 
         const elementProps = {
+            required: true,
             name: field.name,
+            placeholder: field.name,
             value: field.value,
             onChange: changeHandler,
             disabled: flags.savingProcess
@@ -86,14 +88,14 @@ const Editor = props => {
     }
 
     return (
-        <div className={'editor'}>
+        <form className={'editor'} onSubmit={(e) => {e.preventDefault(); save()}}>
             {overlay}
             {fieldElements}
             <div className={'editor__buttons'}>
-                <Button disabled={flags.savingProcess || validationFail} title={'Send'} clickHandler={save}/>
+                <Button disabled={flags.savingProcess || validationFail} title={'Send'}/>
                 <Button disabled={flags.savingProcess} title={'Cancel'} clickHandler={cancel}/>
             </div>
-        </div>
+        </form>
     )
 }
 
